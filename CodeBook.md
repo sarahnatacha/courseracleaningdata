@@ -122,13 +122,13 @@ All variables are the mean of a measurement for each subject and activity. This 
 
 * Get and extract data
     
-   ``` url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+   ``` url <- \"https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip\"```
 
-    zipFile <- "dataset.zip"
-        if(!file.exists(zipFile)) { download.file(url, zipFile) }
+    ```zipFile <- "dataset.zip"```
+    ```if(!file.exists(zipFile)) { download.file(url, zipFile) }```
         
-    dataDir <- "UCI HAR Dataset"
-    if(!file.exists(dataDir)) { unzip(zipFile, exdir = ".") } ```
+    ```dataDir <- "UCI HAR Dataset"```
+    ```if(!file.exists(dataDir)) { unzip(zipFile, exdir = ".") } ```
 
     
     * Merges the training and the test sets to create one data set.
@@ -138,28 +138,28 @@ All variables are the mean of a measurement for each subject and activity. This 
     }```
     
     * Reads and caches XTrain and XTest data
-    ```if(is.null(XTrain)) { XTrain <<- readData("train/X_train.txt") }
-    if(is.null(XTest))  { XTest  <<- readData("test/X_test.txt") }
-    merged <- rbind(XTrain, XTest)
+    ```if(is.null(XTrain)) { XTrain <<- readData("train/X_train.txt") }```
+    ```if(is.null(XTest))  { XTest  <<- readData("test/X_test.txt") }```
+    ```merged <- rbind(XTrain, XTest)```
     
-    featureNames <- readData("features.txt")[, 2]
-    names(merged) <- featureNames```
+    ```featureNames <- readData("features.txt")[, 2]```
+    ```names(merged) <- featureNames```
     
     * Extracts only the measurements on the mean and standard deviation for each measurement. Limit to columns with feature names matching mean() or std():
     ```matches <- grep("(mean|std)\\(\\)", names(merged))
     limited <- merged[, matches]```
     
     * Uses descriptive activity names to name the activities in the data set.Get the activity data and map to variable names:
-    ```path <- getwd()
-    pathIn <- file.path(path, "UCI HAR Dataset")
+    ```path <- getwd()```
+    ```pathIn <- file.path(path, "UCI HAR Dataset")```
     
-    yTrain <- fread(file.path(pathIn, "train", "y_train.txt"))
-    yTest <- fread(file.path(pathIn, "test", "y_test.txt"))
-    yMerged <- rbind(yTrain, yTest)[, 1]
+    ```yTrain <- fread(file.path(pathIn, "train", "y_train.txt"))```
+   ``` yTest <- fread(file.path(pathIn, "test", "y_test.txt"))```
+    ```yMerged <- rbind(yTrain, yTest)[, 1]```
     
-    activityNames <-
-        c("Walking", "Walking Upstairs", "Walking Downstairs", "Sitting", "Standing", "Laying")
-    activities <- activityNames[yMerged]```
+    ```activityNames <-
+        c("Walking", "Walking Upstairs", "Walking Downstairs", "Sitting", "Standing", "Laying")```
+    ```activities <- activityNames[yMerged]```
     
     * Appropriately labels the data set with descriptive variable names.Change t to Time, f to Frequency, mean() to Mean and std() to StdDev. Remove extra dashes and BodyBody naming error from original feature names
     ```names(limited) <- gsub("^t", "Time", names(limited))
@@ -170,15 +170,15 @@ All variables are the mean of a measurement for each subject and activity. This 
     names(limited) <- gsub("BodyBody", "Body", names(limited))```
     
     * Add activities and subject with variable  names
-    ```subjectTrain <- fread(file.path(pathIn, "train", "subject_train.txt"))
-    subjectTest <- fread(file.path(pathIn, "test", "subject_test.txt"))
-    subjects <- rbind(subjectTrain, subjectTest)[, 1]
+    ```subjectTrain <- fread(file.path(pathIn, "train", "subject_train.txt"))```
+    ```subjectTest <- fread(file.path(pathIn, "test", "subject_test.txt"))```
+    ```subjects <- rbind(subjectTrain, subjectTest)[, 1]```
     
-    tidy <- cbind(Subject = subjects, Activity = activities, limited)```
+    ```tidy <- cbind(Subject = subjects, Activity = activities, limited)```
     
     * Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
-    ```library(plyr)
-    ```
+    ```library(plyr)```
+    
     * Column means for all but the subject and activity columns
     ```limitedColMeans <- function(data) { colMeans(data[,-c(1,2)]) }
     tidyMeans <- ddply(tidy, .(Subject, Activity), limitedColMeans)
