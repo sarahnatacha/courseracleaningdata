@@ -129,12 +129,9 @@ All variables are the mean of a measurement for each subject and activity. This 
         
     dataDir <- "UCI HAR Dataset"
     if(!file.exists(dataDir)) { unzip(zipFile, exdir = ".") }
-        
-    dataDir
 
-    dataDir <- downloadData()
     
-    *  1. Merges the training and the test sets to create one data set.
+    * Merges the training and the test sets to create one data set.
     
     readData <- function(path) {
         read.table(filePath(dataDir, path))
@@ -148,11 +145,11 @@ All variables are the mean of a measurement for each subject and activity. This 
     featureNames <- readData("features.txt")[, 2]
     names(merged) <- featureNames
     
-    *  2. Extracts only the measurements on the mean and standard deviation for each measurement. Limit to columns with feature names matching mean() or std():
+    * Extracts only the measurements on the mean and standard deviation for each measurement. Limit to columns with feature names matching mean() or std():
     matches <- grep("(mean|std)\\(\\)", names(merged))
     limited <- merged[, matches]
     
-    * 3. Uses descriptive activity names to name the activities in the data set.Get the activity data and map to variable names:
+    * Uses descriptive activity names to name the activities in the data set.Get the activity data and map to variable names:
     path <- getwd()
     pathIn <- file.path(path, "UCI HAR Dataset")
     
@@ -164,7 +161,7 @@ All variables are the mean of a measurement for each subject and activity. This 
         c("Walking", "Walking Upstairs", "Walking Downstairs", "Sitting", "Standing", "Laying")
     activities <- activityNames[yMerged]
     
-    * 4. Appropriately labels the data set with descriptive variable names.Change t to Time, f to Frequency, mean() to Mean and std() to StdDev. Remove extra dashes and BodyBody naming error from original feature names
+    * Appropriately labels the data set with descriptive variable names.Change t to Time, f to Frequency, mean() to Mean and std() to StdDev. Remove extra dashes and BodyBody naming error from original feature names
     names(limited) <- gsub("^t", "Time", names(limited))
     names(limited) <- gsub("^f", "Frequency", names(limited))
     names(limited) <- gsub("-mean\\(\\)", "Mean", names(limited))
@@ -179,7 +176,7 @@ All variables are the mean of a measurement for each subject and activity. This 
     
     tidy <- cbind(Subject = subjects, Activity = activities, limited)
     
-    * 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+    * Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
     library(plyr)
     * Column means for all but the subject and activity columns
     limitedColMeans <- function(data) { colMeans(data[,-c(1,2)]) }
@@ -189,5 +186,3 @@ All variables are the mean of a measurement for each subject and activity. This 
     * Writes file
     write.table(tidyMeans, "tidyMeans.txt", row.names = FALSE)
     
-    * Also returns data
-    tidyMeans
