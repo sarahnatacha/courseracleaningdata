@@ -122,35 +122,35 @@ All variables are the mean of a measurement for each subject and activity. This 
 
 * Get and extract data
     
-    url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+   ``` url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 
     zipFile <- "dataset.zip"
         if(!file.exists(zipFile)) { download.file(url, zipFile) }
         
     dataDir <- "UCI HAR Dataset"
-    if(!file.exists(dataDir)) { unzip(zipFile, exdir = ".") }
+    if(!file.exists(dataDir)) { unzip(zipFile, exdir = ".") } ```
 
     
     * Merges the training and the test sets to create one data set.
     
-    readData <- function(path) {
+   ``` readData <- function(path) {
         read.table(filePath(dataDir, path))
-    }
+    }```
     
     * Reads and caches XTrain and XTest data
-    if(is.null(XTrain)) { XTrain <<- readData("train/X_train.txt") }
+    ```if(is.null(XTrain)) { XTrain <<- readData("train/X_train.txt") }
     if(is.null(XTest))  { XTest  <<- readData("test/X_test.txt") }
     merged <- rbind(XTrain, XTest)
     
     featureNames <- readData("features.txt")[, 2]
-    names(merged) <- featureNames
+    names(merged) <- featureNames```
     
     * Extracts only the measurements on the mean and standard deviation for each measurement. Limit to columns with feature names matching mean() or std():
-    matches <- grep("(mean|std)\\(\\)", names(merged))
-    limited <- merged[, matches]
+    ```matches <- grep("(mean|std)\\(\\)", names(merged))
+    limited <- merged[, matches]```
     
     * Uses descriptive activity names to name the activities in the data set.Get the activity data and map to variable names:
-    path <- getwd()
+    ```path <- getwd()
     pathIn <- file.path(path, "UCI HAR Dataset")
     
     yTrain <- fread(file.path(pathIn, "train", "y_train.txt"))
@@ -159,30 +159,32 @@ All variables are the mean of a measurement for each subject and activity. This 
     
     activityNames <-
         c("Walking", "Walking Upstairs", "Walking Downstairs", "Sitting", "Standing", "Laying")
-    activities <- activityNames[yMerged]
+    activities <- activityNames[yMerged]```
     
     * Appropriately labels the data set with descriptive variable names.Change t to Time, f to Frequency, mean() to Mean and std() to StdDev. Remove extra dashes and BodyBody naming error from original feature names
-    names(limited) <- gsub("^t", "Time", names(limited))
+    ```names(limited) <- gsub("^t", "Time", names(limited))
     names(limited) <- gsub("^f", "Frequency", names(limited))
     names(limited) <- gsub("-mean\\(\\)", "Mean", names(limited))
     names(limited) <- gsub("-std\\(\\)", "StdDev", names(limited))
     names(limited) <- gsub("-", "", names(limited))
-    names(limited) <- gsub("BodyBody", "Body", names(limited))
+    names(limited) <- gsub("BodyBody", "Body", names(limited))```
     
     * Add activities and subject with variable  names
-    subjectTrain <- fread(file.path(pathIn, "train", "subject_train.txt"))
+    ```subjectTrain <- fread(file.path(pathIn, "train", "subject_train.txt"))
     subjectTest <- fread(file.path(pathIn, "test", "subject_test.txt"))
     subjects <- rbind(subjectTrain, subjectTest)[, 1]
     
-    tidy <- cbind(Subject = subjects, Activity = activities, limited)
+    tidy <- cbind(Subject = subjects, Activity = activities, limited)```
     
     * Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
-    library(plyr)
+    ```library(plyr)
+    ```
     * Column means for all but the subject and activity columns
-    limitedColMeans <- function(data) { colMeans(data[,-c(1,2)]) }
+    ```limitedColMeans <- function(data) { colMeans(data[,-c(1,2)]) }
     tidyMeans <- ddply(tidy, .(Subject, Activity), limitedColMeans)
-    names(tidyMeans)[-c(1,2)] <- paste0("Mean", names(tidyMeans)[-c(1,2)])
+    names(tidyMeans)[-c(1,2)] <- paste0("Mean", names(tidyMeans)[-c(1,2)])```
+    
     
     * Writes file
-    write.table(tidyMeans, "tidyMeans.txt", row.names = FALSE)
+    ``` write.table(tidyMeans, "tidyMeans.txt", row.names = FALSE)```
     
